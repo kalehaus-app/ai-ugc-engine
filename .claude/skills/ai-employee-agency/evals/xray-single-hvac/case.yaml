@@ -1,0 +1,4 @@
+schema_version: "1.1"
+name: xray-single-hvac
+expected_outcome: |
+  One small Sacramento HVAC business is X-rayed, with a likely monthly figure, a range, and every input's source or assumption labeled.

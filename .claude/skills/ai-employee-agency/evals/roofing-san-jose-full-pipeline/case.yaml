@@ -1,0 +1,4 @@
+schema_version: "1.1"
+name: roofing-san-jose-full-pipeline
+expected_outcome: |
+  A leads list of real San Jose roofers, an X-ray of the top one with a sourced range, a Vapi assistant JSON, a proposal at $2,000 a month, and a draft email that isn't sent.

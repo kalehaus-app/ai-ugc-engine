@@ -1,0 +1,4 @@
+schema_version: "1.1"
+name: dentist-receptionist-only
+expected_outcome: |
+  A dental receptionist system prompt and a Vapi assistant JSON for Bright Smile Family Dental, using the given services and hours, with no invented prices and no medical advice.
