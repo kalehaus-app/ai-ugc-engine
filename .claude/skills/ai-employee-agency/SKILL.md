@@ -53,9 +53,9 @@ Use web search (and web fetch on listing pages) to find 10–20 real businesses 
 
 `missed_call_signals` are things like reviews that say "never called back", "went to voicemail" or "couldn't reach anyone"; hours that end at 5pm with no weekend cover; a "call for a quote" site with no booking form; or a single phone number for a one-person crew. Quote the review text and link it. These signals are the strongest part of the pitch.
 
-Score each lead from 1 to 10 for *opportunity* (lots of inbound demand plus visible signs of missed calls) and explain the score in one line. Ratings are a good proxy for demand: many reviews means many customers calling. Sort by score, then write `leads.csv` and `leads.md`. Show the user the top five in a short table and ask which ones to X-ray. If they say "all" or "the top 3", do that.
+Score each lead from 1 to 10 for *opportunity* (lots of inbound demand plus visible signs of missed calls) and explain the score in one line. Ratings are a good proxy for demand: many reviews means many customers calling. Sort by score, then write `leads.csv` with Python's `csv` module so commas inside fields can't break a row, and write `leads.md`. Show the user the top five in a short table and ask which ones to X-ray. If they say "all" or "the top 3", do that.
 
-Skip chains and franchises with corporate call centers. They don't buy from a local agency.
+Skip chains and franchises with corporate call centers. They don't buy from a local agency. Rank businesses that advertise 24/7 live answering, or already use an answering service or AI, near the bottom: they're the hardest sale.
 
 ## Stage 2: X-ray
 
@@ -103,7 +103,7 @@ Prepared by Kale Haus · <date>
 - <Anything else you couldn't verify.>
 ```
 
-When you tell the user the headline number, use the *likely* figure and give the range alongside it.
+When you tell the user the headline number, use the *likely* figure and give the range alongside it. If `roi_multiple_at_low_recovery` is under 1.5, say plainly that this lead is thin at the user's price and suggest the next lead or a lower price.
 
 ## Stage 3: AI employee (Vapi receptionist)
 
@@ -112,7 +112,7 @@ Build a receptionist tailored to this business from what you found: services, se
 - `assets/receptionist-prompt-trades.md`: jobs at the customer's address (roofing, HVAC, plumbing, electrical, pest control, garage doors, landscaping, moving).
 - `assets/receptionist-prompt-appointments.md`: customers come to them (dental, medical and chiro clinics, med spas, salons, auto shops, law-firm intake). It collects visit reasons instead of addresses, has stricter privacy rules, and gives no clinical advice.
 
-Fill in every `{{placeholder}}`. Rewrite a section if the template doesn't fit the business; the templates are starting points. If you don't know a fact (prices, for example), the receptionist captures the details and promises a callback. It never makes up an answer.
+Fill in every `{{placeholder}}`. Rewrite a section if the template doesn't fit the business; the templates are starting points. If you don't know a fact (prices, for example), the receptionist captures the details and promises a callback. It never makes up an answer. Only put facts you verified on a page you actually opened into the prompt as things to tell callers (license numbers, addresses, ratings). Anything you saw only in a search snippet goes in the launch checklist for the owner to confirm, not into the receptionist's mouth.
 
 Then run:
 
@@ -150,6 +150,10 @@ Ask for the monthly price if the user hasn't given one. The reel's example was $
 Write `outreach-email.md` using `references/outreach.md`. Put the X-ray's "Before you pitch" checklist at the top of the file for the user, above the email, so it gets done first. It covers the structure, three subject lines, a follow-up, and the rules for US cold email (CAN-SPAM: honest subject, a physical address, an easy opt-out). Address it to the owner only if you found their name and email on a public source, and cite it. Otherwise leave `{{owner_email}}` for the user to fill in.
 
 If a Gmail connector is available and the user asks, create a **draft** in Gmail. Never send. Sending is the user's decision, every time.
+
+## Writing for the owner
+
+The X-ray, proposal and email go to a business owner. Keep internal wording out of them: no file names, no "benchmarks.md", no "the reel's example", no notes to yourself. Use the same figures in all three: copy them from `xray.json` instead of retyping, so the X-ray, proposal and email never disagree.
 
 ## Finishing a run
 
