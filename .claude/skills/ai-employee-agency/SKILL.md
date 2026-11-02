@@ -21,6 +21,7 @@ The pitch only works if the owner believes the numbers. An inflated "you're losi
 
 - Every dollar figure is an **estimate shown as a range** (low / likely / high), and every input behind it is listed with where it came from.
 - Inputs come from (a) facts about this business that you actually found, (b) the published benchmarks in `references/benchmarks.md` with their sources, or (c) clearly labeled assumptions. Never present an assumption as a fact about the business.
+- **Every number and every quoted fact carries a clickable link or the word "assumption".** That includes studies: write "Moneypenny 2016 ([link](url))", not just the study's name. The owner, or anyone they forward it to, should be able to check each claim in one click. If you only saw a fact in a search snippet and couldn't open the page, link the page anyway and mark it "(from search summary, not opened)".
 - Never invent reviews, call counts, ratings, owner names or emails. If you couldn't find something, write "not found" and move on.
 - The receptionist always discloses that it's an AI assistant if asked, and never claims to be a person.
 
@@ -37,7 +38,9 @@ kale-haus-leads/san-jose-roofing/
     ├── xray.json                  # stage 2, script output
     ├── receptionist/
     │   ├── system-prompt.md       # stage 3
-    │   └── vapi-assistant.json    # stage 3
+    │   ├── vapi-assistant.json    # stage 3
+    │   ├── test-calls.md          # stage 3
+    │   └── launch-checklist.md    # stage 3
     ├── proposal.md                # stage 4
     └── outreach-email.md          # stage 5
 ```
@@ -59,6 +62,8 @@ Skip chains and franchises with corporate call centers. They don't buy from a lo
 For the chosen business, dig deeper: fetch the website, read the most recent reviews, and check hours, booking options and whether a chat widget or AI answering service is already in place.
 
 Then build the inputs for the calculator. Read `references/benchmarks.md` for the defaults and their sources, and `references/niches.md` for job values by niche. Adjust each input to this business with a stated reason. For example, a shop with 900 reviews gets more calls than one with 40, and a crew with no weekend hours misses more.
+
+Each input's `source` must contain a URL or start with `assumption:` followed by the reason. The script rejects anything else, which is what keeps the X-ray checkable.
 
 Run the calculator. It does the math so the numbers are consistent and reproducible:
 
@@ -91,23 +96,46 @@ Prepared by Kale Haus · <date>
 
 ## Caveats
 <What we couldn't see, for example their real call volume. "Your phone records will tell you the real number: we're happy to check them with you.">
+
+## Before you pitch (for the user only; remove this section before sending the X-ray to the owner)
+- Call <phone> after closing time on a weekday, and once on the weekend. Note whether a person, voicemail, an answering service or an AI picks up, and how long the callback takes. A real voicemail is the strongest proof you can bring. If someone or something already answers 24/7, change the pitch or skip this lead.
+- Check every review quote on the live page.
+- <Anything else you couldn't verify.>
 ```
 
 When you tell the user the headline number, use the *likely* figure and give the range alongside it.
 
 ## Stage 3: AI employee (Vapi receptionist)
 
-Build a receptionist tailored to this business from what you found: services, service area, hours, how quotes and emergencies work, and the questions customers ask in reviews. Start from `assets/receptionist-prompt.md` and fill in every `{{placeholder}}`. If you don't know a fact (prices, for example), the receptionist captures the details and promises a callback. It never makes up an answer.
+Build a receptionist tailored to this business from what you found: services, service area, hours, how quotes and emergencies work, and the questions customers ask in reviews. Pick the template that fits:
+
+- `assets/receptionist-prompt-trades.md`: jobs at the customer's address (roofing, HVAC, plumbing, electrical, pest control, garage doors, landscaping, moving).
+- `assets/receptionist-prompt-appointments.md`: customers come to them (dental, medical and chiro clinics, med spas, salons, auto shops, law-firm intake). It collects visit reasons instead of addresses, has stricter privacy rules, and gives no clinical advice.
+
+Fill in every `{{placeholder}}`. Rewrite a section if the template doesn't fit the business; the templates are starting points. If you don't know a fact (prices, for example), the receptionist captures the details and promises a callback. It never makes up an answer.
 
 Then run:
 
 ```bash
-python3 <skill-dir>/scripts/build_vapi.py --business "<name>" --prompt <business-dir>/receptionist/system-prompt.md --first-message "<greeting>" --out <business-dir>/receptionist/vapi-assistant.json
+python3 <skill-dir>/scripts/build_vapi.py --business "<name>" --kind trades|appointments \
+  --prompt <business-dir>/receptionist/system-prompt.md --first-message "<greeting>" \
+  --out <business-dir>/receptionist/vapi-assistant.json [--transfer-number +1XXXXXXXXXX] [--hipaa]
 ```
 
-Defaults are listed in the script. Add `--voice-id` or `--model` if the user asks for them.
+- `--kind` sets which details the call summary captures. Use the same kind as the template.
+- `--transfer-number` lets urgent calls be put through to staff. Use it only with a number the owner gives you; until then, leave it out and say so in the checklist.
+- `--hipaa` is for health practices (dental, medical, chiro, therapy, med spas doing medical treatments). It turns on Vapi's HIPAA mode. The practice also needs a signed BAA (business associate agreement) with Vapi; say so in the checklist.
+- Add `--voice-id` or `--model` only if the user asks.
 
-Tell the user how to test it: open the Vapi dashboard, go to **Assistants**, click **Create**, then paste the JSON or the prompt. Buy or attach a phone number, then call it. If a Vapi API key is available as `VAPI_API_KEY`, offer to create the assistant through the API, but only if the user says yes.
+Then finish the **launch kit**, so the user can get the receptionist live without guessing:
+
+1. `test-calls.md`: fill in `assets/test-calls.md` for this business.
+2. `launch-checklist.md`, short and in plain words:
+   - **Load it:** either paste the JSON in the Vapi dashboard (Assistants → Create), or run `VAPI_API_KEY=... <skill-dir>/scripts/create_assistant.sh <business-dir>/receptionist/vapi-assistant.json`. Then attach a phone number and call it.
+   - **Still needed from the owner:** every fact the prompt says "the team will confirm" about (prices, insurance, address, staff names), the transfer number, and where lead summaries should go (text or email).
+   - **Compliance:** recording disclosure, inbound-only (TCPA), and HIPAA and BAA when it applies.
+
+Never run `create_assistant.sh` or call the Vapi API yourself unless the user says to: it creates something in their account.
 
 Compliance notes to pass on to the user (one line each, not a lecture):
 - The greeting says calls may be recorded, because California and several other states require all parties to consent to recording.
@@ -119,7 +147,7 @@ Ask for the monthly price if the user hasn't given one. The reel's example was $
 
 ## Stage 5: Outreach email (draft only)
 
-Write `outreach-email.md` using `references/outreach.md`. It covers the structure, three subject lines, a follow-up, and the rules for US cold email (CAN-SPAM: honest subject, a physical address, an easy opt-out). Address it to the owner only if you found their name and email on a public source, and cite it. Otherwise leave `{{owner_email}}` for the user to fill in.
+Write `outreach-email.md` using `references/outreach.md`. Put the X-ray's "Before you pitch" checklist at the top of the file for the user, above the email, so it gets done first. It covers the structure, three subject lines, a follow-up, and the rules for US cold email (CAN-SPAM: honest subject, a physical address, an easy opt-out). Address it to the owner only if you found their name and email on a public source, and cite it. Otherwise leave `{{owner_email}}` for the user to fill in.
 
 If a Gmail connector is available and the user asks, create a **draft** in Gmail. Never send. Sending is the user's decision, every time.
 

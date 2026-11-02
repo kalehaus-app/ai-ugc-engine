@@ -4,4 +4,4 @@ focus: trace
 weight: 1
 ---
 
-Every X-ray input is tagged with a source URL or explicitly labeled as an assumption
+Every X-ray input, including any named study, has a URL next to it or is explicitly labeled as an assumption

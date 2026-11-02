@@ -48,8 +48,9 @@ def validate(inputs):
         if not isinstance(f, dict):
             errors.append(f"missing input: {key}")
             continue
-        if not str(f.get("source", "")).strip():
-            errors.append(f"{key}: every input needs a 'source' (a URL, a fact found, or 'assumption: why')")
+        src = str(f.get("source", "")).strip()
+        if "http" not in src and not src.lower().startswith("assumption"):
+            errors.append(f"{key}: 'source' must contain a URL or start with 'assumption:' and say why (got {src!r})")
         vals = []
         for lvl in LEVELS:
             v = f.get(lvl)
