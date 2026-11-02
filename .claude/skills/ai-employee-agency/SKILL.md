@@ -143,7 +143,7 @@ Compliance notes to pass on to the user (one line each, not a lecture):
 
 ## Stage 4: Proposal
 
-Ask for the monthly price if the user hasn't given one. The reel's example was $2,000 a month. Offer a setup fee as optional, and don't add one unless the user wants it. Fill in `assets/proposal-template.md`. The proposal reuses the X-ray's range. It compares the cost against the low end of recovered revenue (being conservative makes it more convincing) and against the cost of a human receptionist. For that cost, use the wage source in `references/benchmarks.md`, not a made-up "$8,000 a month".
+Ask for the monthly price if the user hasn't given one. A common price is about 2,000 dollars a month. Offer a setup fee as optional, and don't add one unless the user wants it. Fill in `assets/proposal-template.md`. The proposal reuses the X-ray's range. It compares the cost against the low end of recovered revenue (being conservative makes it more convincing) and against the cost of a human receptionist. For that cost, use the wage source in `references/benchmarks.md`, not a made-up monthly figure.
 
 ## Stage 5: Outreach email (draft only)
 
